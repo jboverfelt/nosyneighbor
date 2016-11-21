@@ -2,14 +2,6 @@
 	"version": 0,
 	"dependencies": [
 		{
-			"importpath": "github.com/boltdb/bolt",
-			"repository": "https://github.com/boltdb/bolt",
-			"vcs": "git",
-			"revision": "315c65d4cf4f5278c73477a35fb1f9b08365d340",
-			"branch": "master",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/kr/pretty",
 			"repository": "https://github.com/kr/pretty",
 			"vcs": "git",
@@ -40,15 +32,6 @@
 			"revision": "4971afdc2f162e82d185353533d3cf16188a9f4e",
 			"branch": "master",
 			"path": "/context",
-			"notests": true
-		},
-		{
-			"importpath": "golang.org/x/sys/unix",
-			"repository": "https://go.googlesource.com/sys",
-			"vcs": "git",
-			"revision": "b699b7032584f0953262cb2788a0ca19bb494703",
-			"branch": "master",
-			"path": "/unix",
 			"notests": true
 		},
 		{
