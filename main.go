@@ -96,7 +96,7 @@ func checkLatestRequests(e *env, startDate time.Time) error {
 
 		log.Printf("distance for %s: %v", req.Address, metersDist)
 
-		if metersDist > e.threshold {
+		if metersDist < e.threshold {
 			e.mail.SendAlertEmail(e.fromAddr, e.toAddr, req)
 		}
 	}
