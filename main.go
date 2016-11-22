@@ -87,7 +87,7 @@ func checkLatestRequests(e *env, startDate time.Time) error {
 	}
 
 	for _, req := range latest {
-		latLonPair := fmt.Sprintf("%f,%f", req.Lat, req.Long)
+		latLonPair := fmt.Sprintf("%.14f,%.14f", req.Lat, req.Long)
 		metersDist, err := e.dist.Distance(e.home, latLonPair)
 
 		if err != nil {
