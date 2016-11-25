@@ -20,14 +20,14 @@ type env struct {
 	mail          emailer
 	home          string
 	threshold     meters
-	checkDuration time.Duration
+	checkInterval time.Duration
 }
 
 func main() {
 	curEnv := setupEnv()
 
 	for {
-		startDate := time.Now().Add(-curEnv.checkDuration)
+		startDate := time.Now().Add(-curEnv.checkInterval)
 		err := checkLatestRequests(curEnv, startDate)
 
 		if err != nil {
@@ -35,7 +35,7 @@ func main() {
 			return
 		}
 
-		time.Sleep(curEnv.checkDuration)
+		time.Sleep(curEnv.checkInterval)
 	}
 
 }
@@ -60,6 +60,18 @@ func setupEnv() *env {
 		panic("missing required environment variable")
 	}
 
+	checkIntervalStr := os.Getenv("NOSY_CHECK_INTERVAL")
+
+	if checkIntervalStr == "" {
+		checkIntervalStr = "10m"
+	}
+
+	checkInt, err := time.ParseDuration(checkIntervalStr)
+
+	if err != nil {
+		panic(err)
+	}
+
 	mg := mailgun.NewMailgun(mailgunDomain, mailgunPrivKey, mailgunPubKey)
 	mapsClient, err := maps.NewClient(maps.WithAPIKey(mapsKey))
 
@@ -74,7 +86,7 @@ func setupEnv() *env {
 		dist:          &googleMapsDistancer{mapsClient: mapsClient},
 		mail:          &mailgunEmailer{c: mg},
 		home:          home,
-		checkDuration: 2 * time.Minute,
+		checkInterval: checkInt,
 		threshold:     meters(600),
 	}
 }
