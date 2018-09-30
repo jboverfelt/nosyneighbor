@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -9,25 +10,34 @@ import (
 )
 
 type serviceRequest struct {
-	ServiceRequestID  string  `json:"service_request_id"`
-	Status            string  `json:"status"`
-	ServiceName       string  `json:"service_name"`
-	ServiceCode       string  `json:"service_code"`
-	AgencyResponsible string  `json:"agency_responsible"`
-	Description       string  `json:"description"`
-	RequestedDatetime string  `json:"requested_datetime"`
-	UpdatedDatetime   string  `json:"updated_datetime"`
-	Address           string  `json:"address"`
-	Lat               float64 `json:"lat"`
-	Long              float64 `json:"long"`
-	MediaURL          string  `json:"media_url"`
+	Address     string `json:"address"`
+	Agency      string `json:"agency"`
+	CreatedDate string `json:"createddate"`
+	DueDate     string `json:"duedate"`
+	Geolocation struct {
+		Type        string    `json:"type"`
+		Coordinates []float64 `json:"coordinates"`
+	} `json:"geolocation"`
+	Latitude         string `json:"latitude"`
+	Longitude        string `json:"longitude"`
+	Method           string `json:"methodreceived"`
+	Neighborhood     string `json:"neighborhood"`
+	PoliceDistrict   string `json:"policedistrict"`
+	ServiceRequestID string `json:"servicerequestnum"`
+	SRRecordID       string `json:"srrecordid"`
+	Status           string `json:"srstatus"`
+	ServiceName      string `json:"srtype"`
+	StatusDate       string `json:"statusdate"`
+	Zipcode          string `json:"zipcode"`
 }
 
 func latestRequests(reqURL string, startDate time.Time) ([]serviceRequest, error) {
-	format := "2006-01-02T15:04:05-07:00"
+	format := "2006-01-02T15:04:05.999"
 	timeStr := startDate.Format(format)
+
 	v := url.Values{}
-	v.Set("start_date", timeStr)
+	v.Set("$where", fmt.Sprintf("statusdate > '%s'", timeStr))
+	v.Set("$order", "statusdate DESC")
 
 	log.Printf("checking time %s", timeStr)
 
