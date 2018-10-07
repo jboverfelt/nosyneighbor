@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -49,11 +51,14 @@ func latestRequests(reqURL string, startDate time.Time) ([]serviceRequest, error
 
 	defer resp.Body.Close()
 
-	var requests []serviceRequest
+	var buf strings.Builder
+	tee := io.TeeReader(resp.Body, &buf)
 
-	err = json.NewDecoder(resp.Body).Decode(&requests)
+	var requests []serviceRequest
+	err = json.NewDecoder(tee).Decode(&requests)
 
 	if err != nil {
+		log.Printf("json response: %s", buf.String())
 		return nil, err
 	}
 
