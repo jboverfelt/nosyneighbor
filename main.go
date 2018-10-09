@@ -104,6 +104,10 @@ func checkLatestRequests(e *env, startDate time.Time) error {
 	}
 
 	for _, req := range latest {
+		if len(req.Geolocation.Coordinates) < 2 {
+			continue
+		}
+
 		latLonPair := fmt.Sprintf("%.14f,%.14f", req.Geolocation.Coordinates[1], req.Geolocation.Coordinates[0])
 		metersDist, err := e.dist.Distance(e.home, latLonPair)
 
