@@ -4,7 +4,7 @@ packages:
 sources:
     - https://git.sr.ht/~jboverfelt/nosyneighbor
 tasks:
-    - build |
+    - build: |
         go build
         go test
 
