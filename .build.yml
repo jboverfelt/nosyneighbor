@@ -4,6 +4,8 @@ packages:
 sources:
     - https://git.sr.ht/~jboverfelt/nosyneighbor
 tasks:
+    - setup: |
+        cd nosyneighbor
     - build: |
         go build
         go test
