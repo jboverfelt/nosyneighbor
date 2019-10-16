@@ -13,14 +13,15 @@ import (
 )
 
 type env struct {
-	requestURL    string
-	fromAddr      string
-	toAddr        string
-	dist          distancer
-	mail          emailer
-	home          string
-	threshold     meters
-	checkInterval time.Duration
+	requestURL      string
+	fromAddr        string
+	toAddr          string
+	dist            distancer
+	mail            emailer
+	home            string
+	councilDistrict string
+	threshold       meters
+	checkInterval   time.Duration
 }
 
 func main() {
@@ -65,6 +66,8 @@ func setupEnv() *env {
 		panic("missing required environment variable")
 	}
 
+	councilDistrict := os.Getenv("NOSY_COUNCIL_DISTRICT")
+
 	checkIntervalStr := os.Getenv("NOSY_CHECK_INTERVAL")
 
 	if checkIntervalStr == "" {
@@ -85,14 +88,15 @@ func setupEnv() *env {
 	}
 
 	return &env{
-		requestURL:    requestURL,
-		fromAddr:      fromAddr,
-		toAddr:        toAddr,
-		dist:          &googleMapsDistancer{mapsClient: mapsClient},
-		mail:          &mailgunEmailer{c: mg},
-		home:          home,
-		checkInterval: checkInt,
-		threshold:     meters(600),
+		requestURL:      requestURL,
+		fromAddr:        fromAddr,
+		toAddr:          toAddr,
+		dist:            &googleMapsDistancer{mapsClient: mapsClient},
+		mail:            &mailgunEmailer{c: mg},
+		home:            home,
+		councilDistrict: councilDistrict,
+		checkInterval:   checkInt,
+		threshold:       meters(600),
 	}
 }
 
@@ -106,6 +110,16 @@ func checkLatestRequests(e *env, startDate time.Time) error {
 	for _, req := range latest {
 		if len(req.Geolocation.Coordinates) < 2 {
 			continue
+		}
+
+		// if we've defined a council district,
+		// don't even check distance if it's outside
+		// the district
+		if e.councilDistrict != "" {
+			if req.CouncilDistrict != e.councilDistrict {
+				log.Printf("skipping id %s for address %s, outside defined district", req.ServiceRequestID, req.Address)
+				continue
+			}
 		}
 
 		latLonPair := fmt.Sprintf("%.14f,%.14f", req.Geolocation.Coordinates[1], req.Geolocation.Coordinates[0])

@@ -24,6 +24,7 @@ type serviceRequest struct {
 	Longitude        string `json:"longitude"`
 	Method           string `json:"methodreceived"`
 	Neighborhood     string `json:"neighborhood"`
+	CouncilDistrict  string `json:"councildistrict"`
 	PoliceDistrict   string `json:"policedistrict"`
 	ServiceRequestID string `json:"servicerequestnum"`
 	SRRecordID       string `json:"srrecordid"`
