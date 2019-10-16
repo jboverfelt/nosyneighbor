@@ -1,4 +1,4 @@
-# nosyneighbor
+# nosyneighbor [![builds.sr.ht status](https://builds.sr.ht/~jboverfelt/nosyneighbor.svg)](https://builds.sr.ht/~jboverfelt/nosyneighbor?)
 
 Get email notifications when 311 requests are opened near your house
 
